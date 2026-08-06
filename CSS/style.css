@@ -616,3 +616,192 @@ section{
     }
 
 }
+
+/* ==========================================
+   CONTACT
+========================================== */
+
+.contact{
+    padding:120px 8%;
+}
+
+.contact .section-description{
+    max-width:650px;
+    margin:20px auto 0;
+    text-align:center;
+    color:var(--text-secondary);
+    line-height:1.8;
+}
+
+/* Contact Links */
+
+.contact-links{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:50px;
+
+    flex-wrap:wrap;
+
+    margin:60px 0;
+
+}
+
+.contact-links a,
+.contact-links .location{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    text-decoration:none;
+
+    color:var(--text-secondary);
+
+    font-size:1rem;
+
+    font-weight:500;
+
+    transition:.3s;
+
+}
+
+.contact-links a:hover{
+
+    color:var(--primary-color);
+
+    transform:translateY(-3px);
+
+}
+
+.contact-links i{
+    font-size:22px;
+    color:var(--primary-color);
+}
+
+/* Contact Form */
+
+.contact-form{
+
+    max-width:750px;
+
+    margin:auto;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:22px;
+
+}
+
+.contact-form input,
+.contact-form textarea{
+
+    width:100%;
+
+    padding:20px;
+
+    border-radius:18px;
+
+    background:#111;
+
+    color:var(--text-color);
+
+    border:1px solid var(--border-color);
+
+    font-size:1rem;
+
+    resize:none;
+
+    transition:.3s;
+
+}
+
+.contact-form input::placeholder,
+.contact-form textarea::placeholder{
+
+    color:#777;
+
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus{
+
+    outline:none;
+
+    border-color:var(--primary-color);
+
+    box-shadow:0 0 0 4px rgba(59,130,246,.08);
+
+}
+
+/* Button */
+
+.contact-form button{
+
+    align-self:center;
+
+    margin-top:10px;
+
+    padding:16px 40px;
+
+    border:none;
+
+    border-radius:999px;
+
+    background:var(--primary-color);
+
+    color:#fff;
+
+    font-size:1rem;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+.contact-form button:hover{
+
+    transform:translateY(-3px);
+
+    background:#2563eb;
+
+}
+
+/* Responsive */
+
+@media(max-width:768px){
+
+    .contact{
+
+        padding:90px 6%;
+
+    }
+
+    .contact-links{
+
+        flex-direction:column;
+
+        gap:24px;
+
+        margin:50px 0;
+
+    }
+
+    .contact-form{
+
+        width:100%;
+
+    }
+
+}
