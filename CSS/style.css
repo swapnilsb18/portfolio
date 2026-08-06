@@ -312,6 +312,28 @@ section{
 
 }
 
+/* Typing Cursor */
+
+.typing-text::after{
+
+    content:"|";
+
+    margin-left:5px;
+
+    animation:blink .8s infinite;
+
+}
+
+
+@keyframes blink{
+
+    50%{
+
+        opacity:0;
+
+    }
+
+}
 /* ==========================
    SECTION TITLE
 ========================== */
@@ -848,6 +870,33 @@ section{
 
 }
 
+.form-message{
+
+    text-align:center;
+
+    margin-top:15px;
+
+    font-size:.95rem;
+
+    color:var(--primary-color);
+
+    opacity:0;
+
+    transform:translateY(10px);
+
+    transition:.3s ease;
+
+}
+
+
+.form-message.show{
+
+    opacity:1;
+
+    transform:translateY(0);
+
+}
+
 /* Button */
 
 .contact-form button{
@@ -954,5 +1003,76 @@ section{
     opacity:1;
 
     transform:translateY(0);
+
+}
+
+/* ==============================
+   Back To Top Button
+============================== */
+
+.back-to-top{
+
+    position:fixed;
+
+    bottom:30px;
+
+    right:30px;
+
+    width:45px;
+
+    height:45px;
+
+    border-radius:50%;
+
+    border:none;
+
+    background:var(--primary-color);
+
+    color:white;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    cursor:pointer;
+
+    opacity:0;
+
+    visibility:hidden;
+
+    transform:translateY(20px);
+
+    transition:.3s;
+
+    z-index:1000;
+
+}
+
+
+.back-to-top svg{
+
+    width:22px;
+
+    height:22px;
+
+}
+
+
+.back-to-top.show{
+
+    opacity:1;
+
+    visibility:visible;
+
+    transform:translateY(0);
+
+}
+
+
+.back-to-top:hover{
+
+    transform:translateY(-5px);
 
 }

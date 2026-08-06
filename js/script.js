@@ -129,3 +129,125 @@ window.addEventListener("scroll", revealOnScroll);
 
 // Run once when page loads
 revealOnScroll();
+
+// ==============================
+// Hero Typing Effect
+// ==============================
+
+const typingText = 
+"Building modern, responsive, and user-focused web applications.";
+
+const typingElement = document.querySelector(".typing-text");
+
+let charIndex = 0;
+
+
+function typeEffect(){
+
+    if(charIndex < typingText.length){
+
+        typingElement.textContent += typingText.charAt(charIndex);
+
+        charIndex++;
+
+        setTimeout(typeEffect,45);
+
+    }
+
+}
+
+
+typeEffect();
+
+// ==============================
+// Back To Top Button
+// ==============================
+
+const backToTop = document.querySelector("#backToTop");
+
+
+window.addEventListener("scroll", ()=>{
+
+    if(window.scrollY > 500){
+
+        backToTop.classList.add("show");
+
+    }else{
+
+        backToTop.classList.remove("show");
+
+    }
+
+});
+
+
+backToTop.addEventListener("click", ()=>{
+
+    window.scrollTo({
+
+        top:0,
+
+        behavior:"smooth"
+
+    });
+
+});
+
+// ==============================
+// Contact Form Validation
+// ==============================
+
+const contactForm = document.querySelector("#contactForm");
+
+const formMessage = document.querySelector(".form-message");
+
+
+contactForm.addEventListener("submit", (e)=>{
+
+    e.preventDefault();
+
+
+    const name = document.querySelector("#name").value.trim();
+
+    const email = document.querySelector("#email").value.trim();
+
+    const message = document.querySelector("#message").value.trim();
+
+
+
+    if(name === "" || email === "" || message === ""){
+
+        formMessage.textContent = "Please fill all fields.";
+
+        formMessage.classList.add("show");
+
+
+        setTimeout(()=>{
+
+            formMessage.classList.remove("show");
+
+        },1500);
+
+
+        return;
+
+    }
+
+
+
+    formMessage.textContent = "Message sent successfully ✓";
+
+    formMessage.classList.add("show");
+
+
+    contactForm.reset();
+
+
+    setTimeout(()=>{
+
+        formMessage.classList.remove("show");
+
+    },1500);
+
+
+});
