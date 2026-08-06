@@ -328,3 +328,127 @@ section{
     }
 
 }
+
+/* ==========================
+   SKILLS SECTION
+========================== */
+
+.skills{
+    padding:120px 8%;
+}
+
+.section-description{
+    max-width:750px;
+    margin:20px auto 70px;
+    text-align:center;
+    color:var(--text-secondary);
+    line-height:1.8;
+    font-size:1.05rem;
+}
+
+.skills-container{
+    display:flex;
+    flex-direction:column;
+    gap:45px;
+}
+
+.skill-category h3{
+    font-size:1.35rem;
+    margin-bottom:20px;
+    color:var(--text-color);
+    font-weight:600;
+}
+
+.tech-list{
+    display:flex;
+    flex-wrap:wrap;
+    gap:16px;
+}
+
+.tech-pill{
+    display:flex;
+    align-items:center;
+    gap:10px;
+
+    padding:12px 20px;
+
+    background:rgba(255,255,255,0.02);
+
+    border:1px solid var(--border-color);
+
+    border-radius:999px;
+
+    transition:all .3s ease;
+
+    cursor:default;
+}
+
+.tech-pill:hover{
+
+    transform:translateY(-4px);
+
+    border-color:var(--primary-color);
+
+    background:rgba(59,130,246,.08);
+
+}
+
+.tech-pill i{
+
+    font-size:1.4rem;
+
+}
+
+.tech-pill span{
+
+    color:var(--text-secondary);
+
+    font-size:.98rem;
+
+    font-weight:500;
+
+}
+
+/* ==========================
+   RESPONSIVE
+========================== */
+
+@media (max-width:768px){
+
+    .skills{
+
+        padding:90px 6%;
+
+    }
+
+    .skill-category h3{
+
+        font-size:1.2rem;
+
+    }
+
+    .tech-list{
+
+        gap:12px;
+
+    }
+
+    .tech-pill{
+
+        padding:10px 16px;
+
+    }
+
+    .tech-pill i{
+
+        font-size:1.2rem;
+
+    }
+
+    .tech-pill span{
+
+        font-size:.9rem;
+
+    }
+
+}
