@@ -205,3 +205,126 @@ section{
     transform:translateY(-2px);
 
 }
+
+/* ==========================
+   SECTION TITLE
+========================== */
+
+.section-title{
+    text-align:center;
+    margin-bottom:60px;
+}
+
+.section-title p{
+    color:var(--primary-color);
+    font-weight:600;
+    margin-bottom:10px;
+}
+
+.section-title h2{
+    font-size:2.5rem;
+}
+
+/* ==========================
+   ABOUT
+========================== */
+
+.about-container{
+
+    display:grid;
+
+    grid-template-columns:2fr 1fr;
+
+    gap:60px;
+
+    align-items:center;
+
+}
+
+.about-text{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:25px;
+
+}
+
+.about-text p{
+
+    color:var(--text-secondary);
+
+    line-height:1.9;
+
+    font-size:1.05rem;
+
+}
+
+.about-cards{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:20px;
+
+}
+
+.about-card{
+
+    background:var(--surface-color);
+
+    border:1px solid var(--border-color);
+
+    border-radius:var(--radius);
+
+    padding:30px;
+
+    transition:var(--transition);
+
+}
+
+.about-card:hover{
+
+    transform:translateY(-5px);
+
+    border-color:var(--primary-color);
+
+}
+
+.about-card h3{
+
+    font-size:2rem;
+
+    margin-bottom:15px;
+
+}
+
+.about-card h4{
+
+    margin-bottom:8px;
+
+}
+
+.about-card p{
+
+    color:var(--text-secondary);
+
+}
+
+@media (max-width: 900px){
+
+    .about-container{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .about-cards{
+
+        margin-top:20px;
+
+    }
+
+}
