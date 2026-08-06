@@ -1076,3 +1076,57 @@ section{
     transform:translateY(-5px);
 
 }
+
+/* ==============================
+   404 PAGE
+============================== */
+
+
+.error-page{
+
+    min-height:100vh;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    text-align:center;
+
+    padding:40px;
+
+}
+
+
+.error-page h1{
+
+    font-size:8rem;
+
+    color:var(--primary-color);
+
+    margin:0;
+
+}
+
+
+.error-page h2{
+
+    font-size:2rem;
+
+    margin:10px 0;
+
+}
+
+
+.error-page p{
+
+    color:var(--text-secondary);
+
+    margin-bottom:35px;
+
+    max-width:400px;
+
+}
