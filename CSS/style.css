@@ -46,7 +46,8 @@ section{
     width:100%;
     z-index:1000;
 
-    background:rgba(11,11,11,.8);
+    background:color-mix(in srgb, var(--bg-color) 80%, transparent);
+
     backdrop-filter:blur(12px);
 
     border-bottom:1px solid var(--border-color);
@@ -75,7 +76,7 @@ section{
 
     border:none;
 
-    color:white;
+    color:var(--text-color);
 
     cursor:pointer;
 
@@ -193,7 +194,7 @@ section{
 
 .resume-btn{
     background:var(--primary-color);
-    color:white;
+    color:#fff;
 
     padding:12px 22px;
 
@@ -882,7 +883,7 @@ section{
 
     border-radius:18px;
 
-    background:#111;
+    background:var(--surface-color);
 
     color:var(--text-color);
 
@@ -892,14 +893,14 @@ section{
 
     resize:none;
 
-    transition:.3s;
+    transition:var(--transition);
 
 }
 
 .contact-form input::placeholder,
 .contact-form textarea::placeholder{
 
-    color:#777;
+    color:var(--text-secondary);
 
 }
 
@@ -910,7 +911,9 @@ section{
 
     border-color:var(--primary-color);
 
-    box-shadow:0 0 0 4px rgba(59,130,246,.08);
+    background:var(--surface-hover);
+
+    box-shadow:0 0 0 4px rgba(59,130,246,.12);
 
 }
 
@@ -931,7 +934,6 @@ section{
     transition:.3s ease;
 
 }
-
 
 .form-message.show{
 
@@ -965,7 +967,7 @@ section{
 
     cursor:pointer;
 
-    transition:.3s;
+    transition:var(--transition);
 
 }
 
@@ -973,7 +975,7 @@ section{
 
     transform:translateY(-3px);
 
-    background:#2563eb;
+    background:var(--primary-hover);
 
 }
 
@@ -1172,5 +1174,43 @@ section{
     margin-bottom:35px;
 
     max-width:400px;
+
+}
+
+/* ==============================
+   Theme Button
+============================== */
+
+.theme-toggle{
+
+    width:46px;
+
+    height:46px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:var(--surface-color);
+
+    color:var(--text-color);
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    cursor:pointer;
+
+    transition:var(--transition);
+
+    box-shadow:var(--shadow);
+
+}
+
+.theme-toggle:hover{
+
+    transform:translateY(-2px);
 
 }

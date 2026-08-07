@@ -48,3 +48,34 @@
 
     --transition: .3s ease;
 }
+
+[data-theme="light"]{
+
+    /* ===== COLORS ===== */
+
+    --bg-color:#F8FAFC;
+
+    --surface-color:#FFFFFF;
+
+    --surface-hover:#F1F5F9;
+
+    --primary-color:#2563EB;
+
+    --primary-hover:#1D4ED8;
+
+    --text-color:#111827;
+
+    --text-secondary:#6B7280;
+
+    --border-color:#E5E7EB;
+
+    --success-color:#16A34A;
+
+    --danger-color:#DC2626;
+
+    /* ===== SHADOW ===== */
+
+    --shadow:
+        0 10px 30px rgba(15,23,42,.08);
+
+}

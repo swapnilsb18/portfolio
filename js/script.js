@@ -251,3 +251,59 @@ contactForm.addEventListener("submit", (e)=>{
 
 
 });
+
+// ==============================
+// Theme Toggle
+// ==============================
+
+const themeToggle = document.querySelector("#themeToggle");
+
+const currentTheme = localStorage.getItem("theme");
+
+if(currentTheme){
+
+    document.documentElement.setAttribute("data-theme", currentTheme);
+
+    updateIcon(currentTheme);
+
+}
+
+themeToggle.addEventListener("click",()=>{
+
+    const theme =
+        document.documentElement.getAttribute("data-theme");
+
+    if(theme === "light"){
+
+        document.documentElement.removeAttribute("data-theme");
+
+        localStorage.setItem("theme","dark");
+
+        updateIcon("dark");
+
+    }else{
+
+        document.documentElement.setAttribute("data-theme","light");
+
+        localStorage.setItem("theme","light");
+
+        updateIcon("light");
+
+    }
+
+});
+
+
+function updateIcon(theme){
+
+    themeToggle.innerHTML =
+
+        theme === "light"
+
+        ? '<i data-lucide="sun"></i>'
+
+        : '<i data-lucide="moon"></i>';
+
+    lucide.createIcons();
+
+}
