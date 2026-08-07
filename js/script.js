@@ -14,11 +14,14 @@ document.querySelectorAll('a[href^="#"]').forEach(link => {
 
         if(target){
 
-            target.scrollIntoView({
-                behavior:"smooth"
-            });
+    // Close mobile menu immediately
+    navLinks.classList.remove("active");
 
-        }
+    target.scrollIntoView({
+        behavior:"smooth"
+    });
+
+}
 
     });
 
@@ -80,18 +83,6 @@ window.addEventListener("scroll", ()=>{
             link.classList.add("active");
 
         }
-
-    });
-
-});
-
-// Close mobile menu after clicking a link
-
-navItems.forEach(link=>{
-
-    link.addEventListener("click",()=>{
-
-        navLinks.classList.remove("active");
 
     });
 
