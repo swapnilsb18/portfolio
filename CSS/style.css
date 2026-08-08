@@ -95,15 +95,12 @@ section {
     height: 70px;
     padding: 0 20px;
   }
-  .menu-toggle {
-    display: flex;
-  }
   .resume-btn {
     display: none;
   }
 
   .menu-toggle {
-    display: none;
+    display: flex;
 
     width: 42px;
     height: 42px;

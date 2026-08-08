@@ -1,72 +1,118 @@
-// ==============================
-// Smooth Scrolling
-// ==============================
+// ============================================================
+// PORTFOLIO JAVASCRIPT
+// ============================================================
 
-document.querySelectorAll('a[href^="#"]').forEach(link => {
 
-    link.addEventListener("click", function(e){
-
-        e.preventDefault();
-
-        const target = document.querySelector(
-            this.getAttribute("href")
-        );
-
-        if(target){
-
-    // Close mobile menu immediately
-    navLinks.classList.remove("active");
-
-    target.scrollIntoView({
-        behavior:"smooth"
-    });
-
-}
-
-    });
-
-});
-
-// ==============================
-// Mobile Menu
-// ==============================
+// ============================================================
+// SMOOTH SCROLLING
+// ============================================================
 
 const menuToggle = document.querySelector(".menu-toggle");
 const navLinks = document.querySelector(".nav-links");
 
+document.querySelectorAll('a[href^="#"]').forEach(link => {
 
-menuToggle.addEventListener("click", ()=>{
+    link.addEventListener("click", function (e) {
 
-    navLinks.classList.toggle("active");
+        const targetId = this.getAttribute("href");
+
+        if (!targetId || targetId === "#") {
+            return;
+        }
+
+        const target = document.querySelector(targetId);
+
+        if (!target) {
+            return;
+        }
+
+        e.preventDefault();
+
+        // Close mobile menu
+        if (navLinks) {
+            navLinks.classList.remove("active");
+        }
+
+        target.scrollIntoView({
+            behavior: "smooth"
+        });
+
+    });
 
 });
 
-// ==============================
-// Active Navbar On Scroll
-// ==============================
 
-const sections = document.querySelectorAll("section");
+// ============================================================
+// MOBILE MENU
+// ============================================================
 
-const navItems = document.querySelectorAll(".nav-links a");
+if (menuToggle && navLinks) {
+
+    menuToggle.addEventListener("click", () => {
+
+        navLinks.classList.toggle("active");
+
+        const isOpen =
+            navLinks.classList.contains("active");
+
+        menuToggle.setAttribute(
+            "aria-expanded",
+            isOpen ? "true" : "false"
+        );
+
+    });
 
 
-window.addEventListener("scroll", ()=>{
+    // Close menu when clicking a navigation link
+
+    navLinks.querySelectorAll("a").forEach(link => {
+
+        link.addEventListener("click", () => {
+
+            navLinks.classList.remove("active");
+
+            menuToggle.setAttribute(
+                "aria-expanded",
+                "false"
+            );
+
+        });
+
+    });
+
+}
+
+
+// ============================================================
+// ACTIVE NAVBAR ON SCROLL
+// ============================================================
+
+const sections =
+    document.querySelectorAll("section");
+
+const navItems =
+    document.querySelectorAll(".nav-links a");
+
+window.addEventListener("scroll", () => {
 
     let current = "";
 
     sections.forEach(section => {
 
-        const sectionTop = section.offsetTop - 120;
+        const sectionTop =
+            section.offsetTop - 120;
 
-        const sectionHeight = section.clientHeight;
+        const sectionHeight =
+            section.clientHeight;
 
+        if (
+            window.scrollY >= sectionTop &&
+            window.scrollY <
+                sectionTop + sectionHeight
+        ) {
 
-        if(
-            scrollY >= sectionTop &&
-            scrollY < sectionTop + sectionHeight
-        ){
-
-            current = section.getAttribute("id");
+            current =
+                section.getAttribute("id");
 
         }
 
@@ -77,8 +123,10 @@ window.addEventListener("scroll", ()=>{
 
         link.classList.remove("active");
 
-
-        if(link.getAttribute("href") === "#" + current){
+        if (
+            link.getAttribute("href") ===
+            "#" + current
+        ) {
 
             link.classList.add("active");
 
@@ -88,23 +136,28 @@ window.addEventListener("scroll", ()=>{
 
 });
 
-// ==============================
-// Scroll Reveal
-// ==============================
 
-const revealElements = document.querySelectorAll(".reveal");
+// ============================================================
+// SCROLL REVEAL
+// ============================================================
 
+const revealElements =
+    document.querySelectorAll(".reveal");
 
 const revealOnScroll = () => {
 
     revealElements.forEach(element => {
 
-        const elementTop = element.getBoundingClientRect().top;
+        const elementTop =
+            element.getBoundingClientRect().top;
 
-        const windowHeight = window.innerHeight;
+        const windowHeight =
+            window.innerHeight;
 
-
-        if(elementTop < windowHeight - 100){
+        if (
+            elementTop <
+            windowHeight - 100
+        ) {
 
             element.classList.add("active");
 
@@ -114,241 +167,310 @@ const revealOnScroll = () => {
 
 };
 
+window.addEventListener(
+    "scroll",
+    revealOnScroll
+);
 
-window.addEventListener("scroll", revealOnScroll);
-
-
-// Run once when page loads
 revealOnScroll();
 
-// ==============================
-// Hero Typing Effect
-// ==============================
 
-const typingText = 
-"Building modern, responsive, and user-focused web applications.";
+// ============================================================
+// HERO TYPING EFFECT
+// ============================================================
 
-const typingElement = document.querySelector(".typing-text");
+const typingText =
+    "Building modern, responsive, and user-focused web applications.";
+
+const typingElement =
+    document.querySelector(".typing-text");
 
 let charIndex = 0;
 
+function typeEffect() {
 
-function typeEffect(){
+    if (!typingElement) {
+        return;
+    }
 
-    if(charIndex < typingText.length){
+    if (charIndex < typingText.length) {
 
-        typingElement.textContent += typingText.charAt(charIndex);
+        typingElement.textContent +=
+            typingText.charAt(charIndex);
 
         charIndex++;
 
-        setTimeout(typeEffect,45);
+        setTimeout(typeEffect, 45);
 
     }
 
 }
 
-
-typeEffect();
-
-// ==============================
-// Back To Top Button
-// ==============================
-
-const backToTop = document.querySelector("#backToTop");
+if (typingElement) {
+    typeEffect();
+}
 
 
-window.addEventListener("scroll", ()=>{
+// ============================================================
+// BACK TO TOP
+// ============================================================
 
-    if(window.scrollY > 500){
+const backToTop =
+    document.querySelector("#backToTop");
 
-        backToTop.classList.add("show");
+if (backToTop) {
 
-    }else{
+    window.addEventListener("scroll", () => {
 
-        backToTop.classList.remove("show");
+        if (window.scrollY > 500) {
 
-    }
+            backToTop.classList.add("show");
 
-});
+        } else {
 
+            backToTop.classList.remove("show");
 
-backToTop.addEventListener("click", ()=>{
-
-    window.scrollTo({
-
-        top:0,
-
-        behavior:"smooth"
+        }
 
     });
 
-});
 
-// ==============================
-// Contact Form Validation
-// ==============================
+    backToTop.addEventListener(
+        "click",
+        () => {
 
-const contactForm = document.querySelector("#contactForm");
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
 
-const formMessage = document.querySelector(".form-message");
-
-
-contactForm.addEventListener("submit", (e)=>{
-
-    e.preventDefault();
-
-
-    const name = document.querySelector("#name").value.trim();
-
-    const email = document.querySelector("#email").value.trim();
-
-    const message = document.querySelector("#message").value.trim();
-
-
-
-    if(name === "" || email === "" || message === ""){
-
-        formMessage.textContent = "Please fill all fields.";
-
-        formMessage.classList.add("show");
-
-
-        setTimeout(()=>{
-
-            formMessage.classList.remove("show");
-
-        },1500);
-
-
-        return;
-
-    }
-
-
-
-    formMessage.textContent = "Message sent successfully ✓";
-
-    formMessage.classList.add("show");
-
-
-    contactForm.reset();
-
-
-    setTimeout(()=>{
-
-        formMessage.classList.remove("show");
-
-    },1500);
-
-
-});
-
-// ==============================
-// Theme Toggle
-// ==============================
-
-const themeToggle = document.querySelector("#themeToggle");
-
-const currentTheme = localStorage.getItem("theme");
-
-if(currentTheme){
-
-    document.documentElement.setAttribute("data-theme", currentTheme);
-
-    updateIcon(currentTheme);
+        }
+    );
 
 }
 
-themeToggle.addEventListener("click",()=>{
 
-    const theme =
-        document.documentElement.getAttribute("data-theme");
+// ============================================================
+// CONTACT FORM VALIDATION
+// ============================================================
 
-    if(theme === "light"){
+const contactForm =
+    document.querySelector("#contactForm");
 
-        document.documentElement.removeAttribute("data-theme");
+const formMessage =
+    document.querySelector(".form-message");
 
-        localStorage.setItem("theme","dark");
+if (contactForm) {
 
-        updateIcon("dark");
+    contactForm.addEventListener(
+        "submit",
+        e => {
 
-    }else{
+            e.preventDefault();
 
-        document.documentElement.setAttribute("data-theme","light");
+            const name =
+                document.querySelector("#name");
 
-        localStorage.setItem("theme","light");
+            const email =
+                document.querySelector("#email");
 
-        updateIcon("light");
+            const message =
+                document.querySelector("#message");
 
+
+            const nameValue =
+                name ? name.value.trim() : "";
+
+            const emailValue =
+                email ? email.value.trim() : "";
+
+            const messageValue =
+                message ? message.value.trim() : "";
+
+
+            if (
+                nameValue === "" ||
+                emailValue === "" ||
+                messageValue === ""
+            ) {
+
+                if (formMessage) {
+
+                    formMessage.textContent =
+                        "Please fill all fields.";
+
+                    formMessage.classList.add("show");
+
+                    setTimeout(() => {
+
+                        formMessage.classList.remove(
+                            "show"
+                        );
+
+                    }, 1500);
+
+                }
+
+                return;
+            }
+
+
+            if (formMessage) {
+
+                formMessage.textContent =
+                    "Message sent successfully ✓";
+
+                formMessage.classList.add("show");
+
+            }
+
+
+            contactForm.reset();
+
+
+            setTimeout(() => {
+
+                if (formMessage) {
+
+                    formMessage.classList.remove(
+                        "show"
+                    );
+
+                }
+
+            }, 1500);
+
+        }
+    );
+
+}
+
+
+// ============================================================
+// THEME TOGGLE
+// ============================================================
+
+const themeToggle =
+    document.querySelector("#themeToggle");
+
+
+function updateIcon(theme) {
+
+    if (!themeToggle) {
+        return;
     }
-
-});
-
-
-function updateIcon(theme){
 
     themeToggle.innerHTML =
-
         theme === "light"
+            ? '<i data-lucide="sun"></i>'
+            : '<i data-lucide="moon"></i>';
 
-        ? '<i data-lucide="sun"></i>'
+    if (
+        typeof lucide !== "undefined" &&
+        typeof lucide.createIcons === "function"
+    ) {
 
-        : '<i data-lucide="moon"></i>';
+        lucide.createIcons();
 
-    lucide.createIcons();
+    }
 
 }
 
-/* ==========================================
-   LEETCODE ACTIVITY HEATMAP
-========================================== */
 
-const heatmap = document.querySelector("#leetcodeHeatmap");
-const heatmapMonths = document.querySelector("#heatmapMonths");
-const activityYear = document.querySelector("#activityYear");
+const savedTheme =
+    localStorage.getItem("theme");
 
-const totalSolved = document.querySelector("#totalSolved");
-const activeDays = document.querySelector("#activeDays");
-const maxStreak = document.querySelector("#maxStreak");
+if (savedTheme) {
 
-const currentYear = new Date().getFullYear();
+    document.documentElement.setAttribute(
+        "data-theme",
+        savedTheme
+    );
+
+    updateIcon(savedTheme);
+
+}
+
+
+if (themeToggle) {
+
+    themeToggle.addEventListener(
+        "click",
+        () => {
+
+            const theme =
+                document.documentElement
+                    .getAttribute("data-theme");
+
+
+            if (theme === "light") {
+
+                document.documentElement
+                    .removeAttribute("data-theme");
+
+                localStorage.setItem(
+                    "theme",
+                    "dark"
+                );
+
+                updateIcon("dark");
+
+            } else {
+
+                document.documentElement
+                    .setAttribute(
+                        "data-theme",
+                        "light"
+                    );
+
+                localStorage.setItem(
+                    "theme",
+                    "light"
+                );
+
+                updateIcon("light");
+
+            }
+
+        }
+    );
+
+}
+
+
+// ============================================================
+// LEETCODE ACTIVITY HEATMAP
+// ============================================================
+
+const heatmap =
+    document.querySelector("#leetcodeHeatmap");
+
+const heatmapMonths =
+    document.querySelector("#heatmapMonths");
+
+const activityYear =
+    document.querySelector("#activityYear");
+
+const totalSolved =
+    document.querySelector("#totalSolved");
+
+const activeDays =
+    document.querySelector("#activeDays");
+
+const maxStreak =
+    document.querySelector("#maxStreak");
+
+
+const currentYear =
+    new Date().getFullYear();
+
 
 const LEETCODE_API =
     "https://falling-grass-92d4.swapnilbiradar12345.workers.dev/leetcode";
 
-const LEETCODE_USERNAME = "swapnilsb_18";
+const LEETCODE_USERNAME =
+    "swapnilsb_18";
 
-
-/* ==========================================
-   YEAR SELECTOR
-========================================== */
-
-if (activityYear) {
-
-    activityYear.innerHTML = "";
-
-    for (
-        let year = currentYear;
-        year >= currentYear - 4;
-        year--
-    ) {
-
-        const option =
-            document.createElement("option");
-
-        option.value = year;
-        option.textContent = year;
-
-        activityYear.appendChild(option);
-    }
-
-    activityYear.value = currentYear;
-}
-
-
-/* ==========================================
-   MONTH NAMES
-========================================== */
 
 const MONTHS = [
     "Jan",
@@ -366,24 +488,60 @@ const MONTHS = [
 ];
 
 
-/* ==========================================
-   FETCH LEETCODE DATA
-========================================== */
+// ============================================================
+// YEAR SELECTOR
+// ============================================================
+
+if (activityYear) {
+
+    activityYear.innerHTML = "";
+
+    for (
+        let year = currentYear;
+        year >= currentYear - 4;
+        year--
+    ) {
+
+        const option =
+            document.createElement("option");
+
+        option.value = year;
+
+        option.textContent = year;
+
+        activityYear.appendChild(option);
+
+    }
+
+    activityYear.value = currentYear;
+
+}
+
+
+// ============================================================
+// FETCH LEETCODE DATA
+// ============================================================
 
 async function fetchLeetCodeData(year) {
 
-    const response = await fetch(
-        `${LEETCODE_API}?username=${LEETCODE_USERNAME}&year=${year}`
-    );
+    const response =
+        await fetch(
+            `${LEETCODE_API}?username=${LEETCODE_USERNAME}&year=${year}`
+        );
+
 
     if (!response.ok) {
 
         throw new Error(
             `HTTP ${response.status}`
         );
+
     }
 
-    const data = await response.json();
+
+    const data =
+        await response.json();
+
 
     if (
         !data ||
@@ -393,33 +551,30 @@ async function fetchLeetCodeData(year) {
         throw new Error(
             "submissionCalendar missing"
         );
+
     }
 
-    let submissions;
 
     if (
         typeof data.submissionCalendar ===
         "string"
     ) {
 
-        submissions =
-            JSON.parse(
-                data.submissionCalendar
-            );
+        return JSON.parse(
+            data.submissionCalendar
+        );
 
-    } else {
-
-        submissions =
-            data.submissionCalendar;
     }
 
-    return submissions;
+
+    return data.submissionCalendar;
+
 }
 
 
-/* ==========================================
-   CONVERT TIMESTAMP TO DATE KEY
-========================================== */
+// ============================================================
+// TIMESTAMP → DATE KEY
+// ============================================================
 
 function getDateKey(timestamp) {
 
@@ -428,17 +583,19 @@ function getDateKey(timestamp) {
             Number(timestamp) * 1000
         );
 
+
     return `${date.getFullYear()}-${String(
         date.getMonth() + 1
     ).padStart(2, "0")}-${String(
         date.getDate()
     ).padStart(2, "0")}`;
+
 }
 
 
-/* ==========================================
-   BUILD ACTIVITY MAP
-========================================== */
+// ============================================================
+// BUILD ACTIVITY MAP
+// ============================================================
 
 function createActivityMap(submissions) {
 
@@ -451,17 +608,19 @@ function createActivityMap(submissions) {
                 getDateKey(timestamp);
 
             map[dateKey] =
-                Number(count);
+                Number(count) || 0;
+
         }
     );
 
     return map;
+
 }
 
 
-/* ==========================================
-   CREATE DATE KEY
-========================================== */
+// ============================================================
+// FORMAT DATE KEY
+// ============================================================
 
 function formatDateKey(date) {
 
@@ -470,16 +629,17 @@ function formatDateKey(date) {
     ).padStart(2, "0")}-${String(
         date.getDate()
     ).padStart(2, "0")}`;
+
 }
 
 
-/* ==========================================
-   ACTIVITY LEVEL
-========================================== */
+// ============================================================
+// ACTIVITY LEVEL
+// ============================================================
 
 function getActivityLevel(count) {
 
-    if (count === 0) {
+    if (count <= 0) {
         return 0;
     }
 
@@ -496,28 +656,34 @@ function getActivityLevel(count) {
     }
 
     return 4;
+
 }
 
 
-/* ==========================================
-   CALCULATE MAX STREAK
-========================================== */
+// ============================================================
+// MAX STREAK
+// ============================================================
 
 function calculateMaxStreak(activityMap) {
 
     const dates =
         Object.keys(activityMap)
             .filter(
-                date => activityMap[date] > 0
+                date =>
+                    activityMap[date] > 0
             )
             .sort();
+
 
     if (dates.length === 0) {
         return 0;
     }
 
-    let maxStreak = 1;
-    let currentStreak = 1;
+
+    let max = 1;
+
+    let current = 1;
+
 
     for (
         let i = 1;
@@ -527,52 +693,67 @@ function calculateMaxStreak(activityMap) {
 
         const previous =
             new Date(
-                dates[i - 1] + "T00:00:00"
+                dates[i - 1] +
+                "T00:00:00"
             );
 
-        const current =
+        const date =
             new Date(
-                dates[i] + "T00:00:00"
+                dates[i] +
+                "T00:00:00"
             );
+
 
         const difference =
             Math.round(
                 (
-                    current - previous
+                    date - previous
                 ) /
                 (
-                    1000 * 60 * 60 * 24
+                    1000 *
+                    60 *
+                    60 *
+                    24
                 )
             );
 
+
         if (difference === 1) {
 
-            currentStreak++;
+            current++;
 
-            maxStreak =
+            max =
                 Math.max(
-                    maxStreak,
-                    currentStreak
+                    max,
+                    current
                 );
 
         } else {
 
-            currentStreak = 1;
+            current = 1;
+
         }
+
     }
 
-    return maxStreak;
+
+    return max;
+
 }
 
 
-/* ==========================================
-   CALCULATE LIFETIME STATS
-========================================== */
+// ============================================================
+// LIFETIME STATS
+// ============================================================
 
-function calculateLifetimeStats(activityMap) {
+function calculateLifetimeStats(
+    activityMap
+) {
 
     let total = 0;
+
     let days = 0;
+
 
     Object.values(activityMap)
         .forEach(count => {
@@ -585,37 +766,34 @@ function calculateLifetimeStats(activityMap) {
             if (value > 0) {
                 days++;
             }
+
         });
+
 
     const streak =
         calculateMaxStreak(
             activityMap
         );
 
+
     return {
         total,
         days,
         streak
     };
+
 }
 
 
-/* ==========================================
-   CREATE MONTH HEATMAP
-========================================== */
+// ============================================================
+// CREATE MONTH HEATMAP
+// ============================================================
 
 function createMonthHeatmap(
     year,
     month,
     activityMap
 ) {
-
-    /*
-        Each month is its own block.
-
-        7 rows = Sun → Sat
-        Columns = weeks
-    */
 
     const monthContainer =
         document.createElement("div");
@@ -633,6 +811,7 @@ function createMonthHeatmap(
     monthTitle.textContent =
         MONTHS[month];
 
+
     monthContainer.appendChild(
         monthTitle
     );
@@ -645,10 +824,6 @@ function createMonthHeatmap(
         "heatmap-month-grid";
 
 
-    /*
-        First day of month
-    */
-
     const firstDay =
         new Date(
             year,
@@ -656,10 +831,6 @@ function createMonthHeatmap(
             1
         );
 
-
-    /*
-        Last day of month
-    */
 
     const lastDay =
         new Date(
@@ -669,28 +840,15 @@ function createMonthHeatmap(
         );
 
 
-    /*
-        Sunday = 0
-        Monday = 1
-        ...
-        Saturday = 6
-    */
-
     const startWeekday =
         firstDay.getDay();
 
-
-    /*
-        Number of days
-    */
 
     const daysInMonth =
         lastDay.getDate();
 
 
-    /*
-        Empty cells before first day
-    */
+    // Empty cells before first day
 
     for (
         let i = 0;
@@ -707,12 +865,11 @@ function createMonthHeatmap(
         monthGrid.appendChild(
             empty
         );
+
     }
 
 
-    /*
-        Actual days
-    */
+    // Actual days
 
     for (
         let day = 1;
@@ -727,11 +884,14 @@ function createMonthHeatmap(
                 day
             );
 
+
         const dateKey =
             formatDateKey(date);
 
+
         const count =
             activityMap[dateKey] || 0;
+
 
         const level =
             getActivityLevel(count);
@@ -740,13 +900,10 @@ function createMonthHeatmap(
         const cell =
             document.createElement("div");
 
+
         cell.className =
             `heatmap-day level-${level}`;
 
-
-        /*
-            Tooltip
-        */
 
         const formattedDate =
             date.toLocaleDateString(
@@ -759,25 +916,20 @@ function createMonthHeatmap(
             );
 
 
-        if (count === 0) {
-
-            cell.title =
-                `No submissions on ${formattedDate}`;
-
-        } else {
-
-            cell.title =
-                `${count} submission${
+        cell.title =
+            count === 0
+                ? `No submissions on ${formattedDate}`
+                : `${count} submission${
                     count === 1
                         ? ""
                         : "s"
-                } on ${formattedDate}`;
-        }
+                  } on ${formattedDate}`;
 
 
         monthGrid.appendChild(
             cell
         );
+
     }
 
 
@@ -787,12 +939,13 @@ function createMonthHeatmap(
 
 
     return monthContainer;
+
 }
 
 
-/* ==========================================
-   RENDER HEATMAP
-========================================== */
+// ============================================================
+// RENDER HEATMAP
+// ============================================================
 
 function renderHeatmap(
     year,
@@ -803,11 +956,9 @@ function renderHeatmap(
         return;
     }
 
+
     heatmap.innerHTML = "";
 
-    /*
-        Create 12 individual month blocks
-    */
 
     for (
         let month = 0;
@@ -822,27 +973,25 @@ function renderHeatmap(
                 activityMap
             );
 
+
         heatmap.appendChild(
             monthBlock
         );
+
     }
+
 }
 
 
-/* ==========================================
-   LOAD LEETCODE ACTIVITY (per-year heatmap)
-========================================== */
+// ============================================================
+// LOAD SELECTED YEAR HEATMAP
+// ============================================================
 
 async function loadLeetCodeActivity(
     year
 ) {
 
     if (!heatmap) {
-
-        console.error(
-            "LeetCode heatmap not found."
-        );
-
         return;
     }
 
@@ -857,35 +1006,17 @@ async function loadLeetCodeActivity(
         }
 
 
-        /*
-            Fetch selected year
-        */
-
         const submissions =
             await fetchLeetCodeData(
                 year
             );
 
 
-        console.log(
-            `LeetCode ${year} data:`,
-            submissions
-        );
-
-
-        /*
-            Convert to activity map
-        */
-
         const activityMap =
             createActivityMap(
                 submissions
             );
 
-
-        /*
-            Render heatmap
-        */
 
         renderHeatmap(
             year,
@@ -898,23 +1029,29 @@ async function loadLeetCodeActivity(
     catch (error) {
 
         console.error(
-            "LeetCode activity error:",
+            "LeetCode heatmap error:",
             error
         );
+
     }
+
 }
 
 
-/* ==========================================
-   FETCH ALL-TIME STATS (across every year)
-========================================== */
+// ============================================================
+// FETCH ALL-TIME STATS
+// ============================================================
 
 async function fetchAllTimeStats() {
 
     const maxYearsBack = 15;
+
     let year = currentYear;
+
     let combinedMap = {};
+
     let consecutiveEmptyYears = 0;
+
 
     for (
         let i = 0;
@@ -929,46 +1066,70 @@ async function fetchAllTimeStats() {
                     year
                 );
 
+
             const yearMap =
                 createActivityMap(
                     submissions
                 );
 
+
             const hasActivity =
                 Object.values(yearMap)
-                    .some(c => c > 0);
+                    .some(
+                        count => count > 0
+                    );
+
 
             combinedMap = {
                 ...combinedMap,
                 ...yearMap
             };
 
+
             consecutiveEmptyYears =
                 hasActivity
                     ? 0
                     : consecutiveEmptyYears + 1;
 
-        } catch (error) {
+        }
+
+
+        catch (error) {
+
+            console.warn(
+                `Could not fetch LeetCode ${year}`,
+                error
+            );
 
             consecutiveEmptyYears++;
+
         }
 
-        if (consecutiveEmptyYears >= 2) {
+
+        if (
+            consecutiveEmptyYears >= 2
+        ) {
+
             break;
+
         }
+
 
         year--;
+
     }
+
 
     return calculateLifetimeStats(
         combinedMap
     );
+
 }
 
 
-/* ==========================================
-   LOAD ALL-TIME STATS INTO THE UI
-========================================== */
+// ============================================================
+// LOAD ALL-TIME STATS
+// ============================================================
 
 async function loadAllTimeStats() {
 
@@ -995,6 +1156,7 @@ async function loadAllTimeStats() {
 
             totalSolved.textContent =
                 stats.total.toLocaleString();
+
         }
 
 
@@ -1002,6 +1164,7 @@ async function loadAllTimeStats() {
 
             activeDays.textContent =
                 stats.days.toLocaleString();
+
         }
 
 
@@ -1009,22 +1172,25 @@ async function loadAllTimeStats() {
 
             maxStreak.textContent =
                 stats.streak;
+
         }
 
 
         console.log(
-            "LeetCode all-time stats:",
+            "LeetCode lifetime stats:",
             stats
         );
 
     }
 
+
     catch (error) {
 
         console.error(
-            "LeetCode all-time stats error:",
+            "LeetCode stats error:",
             error
         );
+
 
         if (totalSolved) {
             totalSolved.textContent = "--";
@@ -1037,13 +1203,15 @@ async function loadAllTimeStats() {
         if (maxStreak) {
             maxStreak.textContent = "--";
         }
+
     }
+
 }
 
 
-/* ==========================================
-   INITIAL LOAD
-========================================== */
+// ============================================================
+// INITIAL LOAD
+// ============================================================
 
 loadLeetCodeActivity(
     currentYear
@@ -1052,11 +1220,9 @@ loadLeetCodeActivity(
 loadAllTimeStats();
 
 
-/* ==========================================
-   YEAR CHANGE
-   (heatmap only — Total Solved / Active Days /
-   Max Streak stay lifetime and don't change)
-========================================== */
+// ============================================================
+// YEAR CHANGE
+// ============================================================
 
 if (activityYear) {
 
@@ -1069,10 +1235,21 @@ if (activityYear) {
                     activityYear.value
                 );
 
+
             loadLeetCodeActivity(
                 selectedYear
             );
+
         }
     );
+
 }
 
+
+// ============================================================
+// FINAL SAFETY LOG
+// ============================================================
+
+console.log(
+    "Portfolio JavaScript loaded successfully."
+);
