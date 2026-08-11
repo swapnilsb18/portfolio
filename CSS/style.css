@@ -1301,147 +1301,234 @@ section {
   color: var(--primary-color);
 }
 
-/* Contact Form */
+/* ============================================================
+   CONTACT FORM
+============================================================ */
 
 .contact-form {
-  max-width: 750px;
+    max-width: 750px;
+    margin: auto;
 
-  margin: auto;
-
-  display: flex;
-
-  flex-direction: column;
-
-  gap: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
 }
+
+
+/* ============================================================
+   INPUTS
+============================================================ */
 
 .contact-form input,
 .contact-form textarea {
-  width: 100%;
+    width: 100%;
 
-  padding: 20px;
+    padding: 20px;
 
-  border-radius: 18px;
+    border-radius: 18px;
 
-  background: var(--surface-color);
+    background: var(--surface-color);
+    color: var(--text-color);
 
-  color: var(--text-color);
+    border: 1px solid var(--border-color);
 
-  border: 1px solid var(--border-color);
+    font-size: 1rem;
 
-  font-size: 1rem;
+    resize: none;
 
-  resize: none;
+    transition: var(--transition);
 
-  transition: var(--transition);
+    box-sizing: border-box;
 }
+
 
 .contact-form input::placeholder,
 .contact-form textarea::placeholder {
-  color: var(--text-secondary);
+    color: var(--text-secondary);
 }
+
 
 .contact-form input:focus,
 .contact-form textarea:focus {
-  outline: none;
+    outline: none;
 
-  border-color: var(--primary-color);
+    border-color: var(--primary-color);
 
-  background: var(--surface-hover);
+    background: var(--surface-hover);
 
-  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
+    box-shadow:
+        0 0 0 4px rgba(59, 130, 246, 0.12);
 }
+
+
+/* ============================================================
+   FORM MESSAGE
+============================================================ */
 
 .form-message {
-  text-align: center;
+    text-align: center;
 
-  margin-top: 15px;
+    margin-top: 15px;
 
-  font-size: 0.95rem;
+    font-size: 0.95rem;
+    font-weight: 500;
 
-  color: var(--primary-color);
+    opacity: 0;
 
-  opacity: 0;
+    transform: translateY(10px);
 
-  transform: translateY(10px);
-
-  transition: 0.3s ease;
+    transition:
+        opacity 0.3s ease,
+        transform 0.3s ease;
 }
+
+
+/* Message visible */
 
 .form-message.show {
-  opacity: 1;
+    opacity: 1;
 
-  transform: translateY(0);
+    transform: translateY(0);
 }
 
-/* Button */
+
+/* Success */
+
+.form-message.success {
+    color: #22c55e;
+}
+
+
+/* Error */
+
+.form-message.error {
+    color: #ef4444;
+}
+
+
+/* ============================================================
+   SEND BUTTON
+============================================================ */
 
 .contact-form button {
-  align-self: center;
+    align-self: center;
 
-  margin-top: 10px;
+    margin-top: 10px;
 
-  padding: 16px 40px;
+    padding: 16px 40px;
 
-  border: none;
+    border: none;
 
-  border-radius: 999px;
+    border-radius: 999px;
 
-  background: var(--primary-color);
+    background: var(--primary-color);
 
-  color: #fff;
+    color: #fff;
 
-  font-size: 1rem;
+    font-size: 1rem;
 
-  font-weight: 600;
+    font-weight: 600;
 
-  cursor: pointer;
+    cursor: pointer;
 
-  transition: var(--transition);
+    transition:
+        transform 0.3s ease,
+        background 0.3s ease,
+        opacity 0.3s ease;
 }
+
+
+/* Hover */
 
 .contact-form button:hover {
-  transform: translateY(-3px);
+    transform: translateY(-3px);
 
-  background: var(--primary-hover);
+    background: var(--primary-hover);
 }
 
-/* Responsive */
+
+/* ============================================================
+   BUTTON WHILE SENDING
+============================================================ */
+
+.contact-form button:disabled {
+    opacity: 0.7;
+
+    cursor: not-allowed;
+
+    transform: none;
+}
+
+
+/* Prevent hover animation while disabled */
+
+.contact-form button:disabled:hover {
+    transform: none;
+
+    background: var(--primary-color);
+}
+
+
+/* ============================================================
+   RESPONSIVE
+============================================================ */
 
 @media (max-width: 768px) {
-  .contact {
-    padding: 90px 6%;
-  }
 
-  .contact-links {
-    flex-direction: column;
+    .contact {
+        padding: 90px 6%;
+    }
 
-    gap: 24px;
 
-    margin: 50px 0;
-  }
+    .contact-links {
+        flex-direction: column;
 
-  .contact-form {
-    width: 100%;
-  }
+        gap: 24px;
+
+        margin: 50px 0;
+    }
+
+
+    .contact-form {
+        width: 100%;
+    }
+
+
+    .contact-form input,
+    .contact-form textarea {
+        padding: 17px;
+
+        font-size: 0.95rem;
+    }
+
+
+    .contact-form button {
+        width: 100%;
+
+        padding: 15px 25px;
+    }
+
 }
 
-/* Footer */
+
+/* ============================================================
+   FOOTER
+============================================================ */
 
 .footer {
-  padding: 40px 8%;
+    padding: 40px 8%;
 
-  text-align: center;
+    text-align: center;
 
-  border-top: 1px solid var(--border-color);
+    border-top: 1px solid var(--border-color);
 }
+
 
 .footer p {
-  color: var(--text-secondary);
+    color: var(--text-secondary);
 
-  font-size: 0.9rem;
+    font-size: 0.9rem;
 }
-
 /* ==============================
    Scroll Reveal Animation
 ============================== */

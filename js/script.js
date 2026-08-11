@@ -251,7 +251,7 @@ if (backToTop) {
 
 
 // ============================================================
-// CONTACT FORM VALIDATION
+// CONTACT FORM
 // ============================================================
 
 const contactForm =
@@ -260,13 +260,21 @@ const contactForm =
 const formMessage =
     document.querySelector(".form-message");
 
+const CONTACT_WORKER_URL =
+    "https://misty-leaf-82a8.swapnilbiradar12345.workers.dev/";
+
 if (contactForm) {
 
     contactForm.addEventListener(
         "submit",
-        e => {
+        async (e) => {
 
             e.preventDefault();
+
+
+            // ==================================================
+            // Get form fields
+            // ==================================================
 
             const name =
                 document.querySelector("#name");
@@ -276,6 +284,11 @@ if (contactForm) {
 
             const message =
                 document.querySelector("#message");
+
+            const submitButton =
+                contactForm.querySelector(
+                    'button[type="submit"]'
+                );
 
 
             const nameValue =
@@ -288,63 +301,207 @@ if (contactForm) {
                 message ? message.value.trim() : "";
 
 
+            // ==================================================
+            // Validate fields
+            // ==================================================
+
             if (
-                nameValue === "" ||
-                emailValue === "" ||
-                messageValue === ""
+                !nameValue ||
+                !emailValue ||
+                !messageValue
             ) {
 
-                if (formMessage) {
-
-                    formMessage.textContent =
-                        "Please fill all fields.";
-
-                    formMessage.classList.add("show");
-
-                    setTimeout(() => {
-
-                        formMessage.classList.remove(
-                            "show"
-                        );
-
-                    }, 1500);
-
-                }
+                showFormMessage(
+                    "Please fill all fields.",
+                    "error"
+                );
 
                 return;
             }
 
 
-            if (formMessage) {
+            // ==================================================
+            // Validate email
+            // ==================================================
 
-                formMessage.textContent =
-                    "Message sent successfully ✓";
+            const emailRegex =
+                /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-                formMessage.classList.add("show");
+            if (!emailRegex.test(emailValue)) {
 
+                showFormMessage(
+                    "Please enter a valid email address.",
+                    "error"
+                );
+
+                return;
             }
 
 
-            contactForm.reset();
+            // ==================================================
+            // Loading state
+            // ==================================================
+
+            const originalButtonText =
+                submitButton
+                    ? submitButton.innerHTML
+                    : "";
+
+            if (submitButton) {
+
+                submitButton.disabled = true;
+
+                submitButton.innerHTML =
+                    "Sending...";
+            }
 
 
-            setTimeout(() => {
+            try {
 
-                if (formMessage) {
+                // ==================================================
+                // Send data to Cloudflare Worker
+                // ==================================================
 
-                    formMessage.classList.remove(
-                        "show"
+                const response =
+                    await fetch(
+                        CONTACT_WORKER_URL,
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body: JSON.stringify({
+                                name: nameValue,
+                                email: emailValue,
+                                message: messageValue
+                            })
+                        }
+                    );
+
+
+                // ==================================================
+                // Read Worker response
+                // ==================================================
+
+                const data =
+                    await response.json();
+
+
+                // ==================================================
+                // Check response
+                // ==================================================
+
+                if (
+                    !response.ok ||
+                    !data.success
+                ) {
+
+                    throw new Error(
+                        data.message ||
+                        "Unable to send message."
                     );
 
                 }
 
-            }, 1500);
+
+                // ==================================================
+                // Success
+                // ==================================================
+
+                showFormMessage(
+                    "Message sent successfully ✓",
+                    "success"
+                );
+
+
+                // Clear form
+
+                contactForm.reset();
+
+
+            }
+            catch (error) {
+
+                console.error(
+                    "Contact form error:",
+                    error
+                );
+
+
+                showFormMessage(
+                    "Unable to send message. Please try again.",
+                    "error"
+                );
+
+            }
+            finally {
+
+                // ==================================================
+                // Restore button
+                // ==================================================
+
+                if (submitButton) {
+
+                    submitButton.disabled = false;
+
+                    submitButton.innerHTML =
+                        originalButtonText;
+
+                }
+
+            }
 
         }
     );
 
 }
 
+
+// ============================================================
+// FORM MESSAGE HELPER
+// ============================================================
+
+function showFormMessage(
+    text,
+    type = "success"
+) {
+
+    if (!formMessage) {
+        return;
+    }
+
+
+    formMessage.textContent =
+        text;
+
+
+    formMessage.classList.remove(
+        "show",
+        "success",
+        "error"
+    );
+
+
+    formMessage.classList.add(
+        "show",
+        type
+    );
+
+
+    // Hide after 4 seconds
+
+    setTimeout(() => {
+
+        formMessage.classList.remove(
+            "show"
+        );
+
+    }, 4000);
+
+}
 
 // ============================================================
 // THEME TOGGLE
