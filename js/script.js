@@ -520,6 +520,8 @@ if (activityYear) {
 
 // ============================================================
 // FETCH LEETCODE DATA
+// (returns the full worker payload: submissionCalendar,
+// totalActiveDays, streak, totalSolved, etc.)
 // ============================================================
 
 async function fetchLeetCodeData(year) {
@@ -560,14 +562,15 @@ async function fetchLeetCodeData(year) {
         "string"
     ) {
 
-        return JSON.parse(
-            data.submissionCalendar
-        );
+        data.submissionCalendar =
+            JSON.parse(
+                data.submissionCalendar
+            );
 
     }
 
 
-    return data.submissionCalendar;
+    return data;
 
 }
 
@@ -597,11 +600,11 @@ function getDateKey(timestamp) {
 // BUILD ACTIVITY MAP
 // ============================================================
 
-function createActivityMap(submissions) {
+function createActivityMap(submissionCalendar) {
 
     const map = {};
 
-    Object.entries(submissions).forEach(
+    Object.entries(submissionCalendar).forEach(
         ([timestamp, count]) => {
 
             const dateKey =
@@ -743,27 +746,21 @@ function calculateMaxStreak(activityMap) {
 
 
 // ============================================================
-// LIFETIME STATS
+// ACTIVE DAYS + MAX STREAK FROM AN ACTIVITY MAP
+// (NOT used for "problems solved" — submissionCalendar
+// counts every submission attempt, not just accepted ones)
 // ============================================================
 
-function calculateLifetimeStats(
+function calculateActivityStats(
     activityMap
 ) {
 
-    let total = 0;
-
     let days = 0;
-
 
     Object.values(activityMap)
         .forEach(count => {
 
-            const value =
-                Number(count) || 0;
-
-            total += value;
-
-            if (value > 0) {
+            if (count > 0) {
                 days++;
             }
 
@@ -777,7 +774,6 @@ function calculateLifetimeStats(
 
 
     return {
-        total,
         days,
         streak
     };
@@ -1006,7 +1002,7 @@ async function loadLeetCodeActivity(
         }
 
 
-        const submissions =
+        const data =
             await fetchLeetCodeData(
                 year
             );
@@ -1014,7 +1010,7 @@ async function loadLeetCodeActivity(
 
         const activityMap =
             createActivityMap(
-                submissions
+                data.submissionCalendar
             );
 
 
@@ -1040,6 +1036,12 @@ async function loadLeetCodeActivity(
 
 // ============================================================
 // FETCH ALL-TIME STATS
+// Total Solved -> submitStatsGlobal.acSubmissionNum via the
+// worker (lifetime, accepted-only, same value every year so
+// only needs to be read once).
+// Active Days / Max Streak -> still built by walking back
+// across each year's submissionCalendar, since those track
+// activity/streaks rather than acceptance.
 // ============================================================
 
 async function fetchAllTimeStats() {
@@ -1052,6 +1054,10 @@ async function fetchAllTimeStats() {
 
     let consecutiveEmptyYears = 0;
 
+    let totalSolved = 0;
+
+    let totalSolvedCaptured = false;
+
 
     for (
         let i = 0;
@@ -1061,15 +1067,27 @@ async function fetchAllTimeStats() {
 
         try {
 
-            const submissions =
+            const data =
                 await fetchLeetCodeData(
                     year
                 );
 
 
+            if (!totalSolvedCaptured) {
+
+                totalSolved =
+                    Number(
+                        data.totalSolved
+                    ) || 0;
+
+                totalSolvedCaptured = true;
+
+            }
+
+
             const yearMap =
                 createActivityMap(
-                    submissions
+                    data.submissionCalendar
                 );
 
 
@@ -1120,9 +1138,17 @@ async function fetchAllTimeStats() {
     }
 
 
-    return calculateLifetimeStats(
-        combinedMap
-    );
+    const activityStats =
+        calculateActivityStats(
+            combinedMap
+        );
+
+
+    return {
+        totalSolved,
+        days: activityStats.days,
+        streak: activityStats.streak
+    };
 
 }
 
@@ -1155,7 +1181,7 @@ async function loadAllTimeStats() {
         if (totalSolved) {
 
             totalSolved.textContent =
-                stats.total.toLocaleString();
+                stats.totalSolved.toLocaleString();
 
         }
 
