@@ -1784,7 +1784,7 @@ section {
 .leetcode-stats {
   display: grid;
 
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(5, 1fr);
 
   gap: 16px;
 
@@ -1792,7 +1792,7 @@ section {
 }
 
 .leetcode-stat {
-  padding: 20px;
+  padding: 16px 10px;
 
   border: 1px solid var(--border-color);
 
@@ -1814,7 +1814,7 @@ section {
 .stat-value {
   display: block;
 
-  font-size: 1.7rem;
+  font-size: 1.4rem;
 
   font-weight: 700;
 
@@ -1828,7 +1828,7 @@ section {
 
   color: var(--text-secondary);
 
-  font-size: 0.82rem;
+  font-size: 0.75rem;
 }
 
 /* ==========================================

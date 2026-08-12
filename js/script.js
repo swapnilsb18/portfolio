@@ -617,6 +617,15 @@ const activeDays =
 const maxStreak =
     document.querySelector("#maxStreak");
 
+// Add these elements to your HTML for the per-platform /
+// combined breakdown (id names are up to you — update the
+// selectors below to match):
+const gfgSolved =
+    document.querySelector("#gfgSolved");
+
+const combinedTotalSolved =
+    document.querySelector("#combinedTotalSolved");
+
 
 const currentYear =
     new Date().getFullYear();
@@ -626,6 +635,13 @@ const LEETCODE_API =
     "https://falling-grass-92d4.swapnilbiradar12345.workers.dev/leetcode";
 
 const LEETCODE_USERNAME =
+    "swapnilsb_18";
+
+// Worker route added for GFG (see leetcode-worker.js /gfg)
+const GFG_API =
+    "https://falling-grass-92d4.swapnilbiradar12345.workers.dev/gfg";
+
+const GFG_USERNAME =
     "swapnilsb_18";
 
 
@@ -1311,6 +1327,94 @@ async function fetchAllTimeStats() {
 
 
 // ============================================================
+// FETCH GFG TOTAL SOLVED
+// (proxied through our own worker's /gfg route, which itself
+// calls a third-party unofficial GFG stats API. This can fail
+// or be unavailable — always treat it as optional and never
+// let it block LeetCode stats or the heatmap.)
+// ============================================================
+
+async function fetchGfgTotalSolved() {
+
+    try {
+
+        const response =
+            await fetch(
+                `${GFG_API}?username=${GFG_USERNAME}`
+            );
+
+        if (!response.ok) {
+            throw new Error(
+                `HTTP ${response.status}`
+            );
+        }
+
+        const data =
+            await response.json();
+
+        return Number(data.totalSolved) || 0;
+
+    }
+
+    catch (error) {
+
+        console.warn(
+            "GFG stats unavailable:",
+            error
+        );
+
+        return null; // null = couldn't fetch, not zero solved
+
+    }
+
+}
+
+
+// ============================================================
+// LOAD COMBINED STATS (LeetCode + GFG)
+// Combined total only — the heatmap itself stays LeetCode-only
+// since GFG has no per-day submission data.
+// ============================================================
+
+async function loadCombinedStats(leetcodeTotalSolved) {
+
+    if (gfgSolved) {
+        gfgSolved.textContent = "...";
+    }
+
+    if (combinedTotalSolved) {
+        combinedTotalSolved.textContent = "...";
+    }
+
+
+    const gfgTotal =
+        await fetchGfgTotalSolved();
+
+
+    if (gfgSolved) {
+
+        gfgSolved.textContent =
+            gfgTotal === null
+                ? "--"
+                : gfgTotal.toLocaleString();
+    }
+
+
+    const combined =
+        leetcodeTotalSolved +
+        (gfgTotal || 0);
+
+
+    if (combinedTotalSolved) {
+
+        combinedTotalSolved.textContent =
+            combined.toLocaleString();
+    }
+
+}
+
+
+// ============================================================
 // LOAD ALL-TIME STATS
 // ============================================================
 
@@ -1364,6 +1468,14 @@ async function loadAllTimeStats() {
             stats
         );
 
+
+        // GFG is independent of LeetCode's health, so this
+        // runs even if LeetCode fails — it never throws back
+        // into this try block.
+        loadCombinedStats(
+            stats.totalSolved
+        );
+
     }
 
 
@@ -1386,6 +1498,10 @@ async function loadAllTimeStats() {
         if (maxStreak) {
             maxStreak.textContent = "--";
         }
+
+        // LeetCode failed, but GFG's combined total can still
+        // show using 0 as the LeetCode contribution.
+        loadCombinedStats(0);
 
     }
 
