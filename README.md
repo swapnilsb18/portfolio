@@ -6,7 +6,7 @@ The portfolio is designed to give recruiters and visitors a quick overview of wh
 
 ## 🌐 Live Portfolio
 
-**Portfolio:** [Add your deployed portfolio URL here]
+**Portfolio:** [https://swapnilsb18.github.io/portfolio/]
 
 ---
 
@@ -257,7 +257,7 @@ The goal is not simply to display information, but to demonstrate practical fron
 Clone the repository:
 
 ```bash
-git clone YOUR_REPOSITORY_URL
+git clone https://github.com/swapnilsb18/portfolio
 ```
 
 Navigate into the project:
@@ -314,13 +314,13 @@ Potential future improvements include:
 
 If you'd like to discuss a project, collaboration, internship, or development opportunity, you can contact me through the portfolio's contact section.
 
-**Portfolio:** [Add URL]
+**Portfolio:** [https://swapnilsb18.github.io/portfolio/]
 
-**GitHub:** [Add GitHub URL]
+**GitHub:** [https://github.com/swapnilsb18]
 
-**LinkedIn:** [Add LinkedIn URL]
+**LinkedIn:** [www.linkedin.com/in/swapnil-biradar-025981257]
 
-**Email:** [Add Email]
+**Email:** [swapnilsbofficial@gmail.com]
 
 ---
 
