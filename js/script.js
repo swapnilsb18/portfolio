@@ -954,6 +954,7 @@ function calculateActivityStats(
 }
 
 
+
 // ============================================================
 // CREATE MONTH HEATMAP
 // ============================================================
@@ -1040,6 +1041,13 @@ function createMonthHeatmap(
 
     // Actual days
 
+    const today =
+        new Date();
+
+    today.setHours(
+        0, 0, 0, 0
+    );
+
     for (
         let day = 1;
         day <= daysInMonth;
@@ -1052,6 +1060,25 @@ function createMonthHeatmap(
                 month,
                 day
             );
+
+
+        // Future date — render blank, not a dot
+
+        if (date > today) {
+
+            const empty =
+                document.createElement("div");
+
+            empty.className =
+                "heatmap-day heatmap-empty";
+
+            monthGrid.appendChild(
+                empty
+            );
+
+            continue;
+
+        }
 
 
         const dateKey =
@@ -1111,7 +1138,6 @@ function createMonthHeatmap(
 
 }
 
-
 // ============================================================
 // RENDER HEATMAP
 // ============================================================
@@ -1129,11 +1155,33 @@ function renderHeatmap(
     heatmap.innerHTML = "";
 
 
+    const today =
+        new Date();
+
+    today.setHours(
+        0, 0, 0, 0
+    );
+
+
     for (
         let month = 0;
         month < 12;
         month++
     ) {
+
+        const firstDayOfMonth =
+            new Date(
+                year,
+                month,
+                1
+            );
+
+
+        // Skip months that haven't started yet at all
+        if (firstDayOfMonth > today) {
+            continue;
+        }
+
 
         const monthBlock =
             createMonthHeatmap(
