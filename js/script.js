@@ -594,7 +594,6 @@ if (themeToggle) {
 
 }
 
-
 // ============================================================
 // LEETCODE ACTIVITY HEATMAP
 // ============================================================
@@ -617,11 +616,12 @@ const activeDays =
 const maxStreak =
     document.querySelector("#maxStreak");
 
-// Add these elements to your HTML for the per-platform /
-// combined breakdown (id names are up to you — update the
-// selectors below to match):
+// Per-platform / combined breakdown elements
 const gfgSolved =
     document.querySelector("#gfgSolved");
+
+const codestudioSolved =
+    document.querySelector("#codestudioSolved");
 
 const combinedTotalSolved =
     document.querySelector("#combinedTotalSolved");
@@ -637,12 +637,23 @@ const LEETCODE_API =
 const LEETCODE_USERNAME =
     "swapnilsb_18";
 
-// Worker route added for GFG (see leetcode-worker.js /gfg)
 const GFG_API =
     "https://falling-grass-92d4.swapnilbiradar12345.workers.dev/gfg";
 
 const GFG_USERNAME =
     "swapnilsb_18";
+
+const CODESTUDIO_API =
+    "https://falling-grass-92d4.swapnilbiradar12345.workers.dev/codestudio";
+
+const CODESTUDIO_UUID =
+    "cde00eb3-20be-41c2-b47c-569cc3f4e925";
+
+// How far back to pull CodeStudio history from. Adjust to
+// whenever you joined Code360 — pulling too wide a range just
+// means more pages for the worker to walk.
+const CODESTUDIO_START_DATE =
+    "2022-01-01T00:00:00Z";
 
 
 const MONTHS = [
@@ -957,6 +968,9 @@ function calculateActivityStats(
 
 // ============================================================
 // CREATE MONTH HEATMAP
+// (targetContainer defaults to the LeetCode heatmap element so
+// existing calls don't need to change; pass a different
+// container — e.g. codestudioHeatmap — to render elsewhere.)
 // ============================================================
 
 function createMonthHeatmap(
@@ -1140,19 +1154,22 @@ function createMonthHeatmap(
 
 // ============================================================
 // RENDER HEATMAP
+// (targetContainer defaults to the LeetCode heatmap element so
+// existing calls don't need to change.)
 // ============================================================
 
 function renderHeatmap(
     year,
-    activityMap
+    activityMap,
+    targetContainer = heatmap
 ) {
 
-    if (!heatmap) {
+    if (!targetContainer) {
         return;
     }
 
 
-    heatmap.innerHTML = "";
+    targetContainer.innerHTML = "";
 
 
     const today =
@@ -1191,7 +1208,7 @@ function renderHeatmap(
             );
 
 
-        heatmap.appendChild(
+        targetContainer.appendChild(
             monthBlock
         );
 
@@ -1201,7 +1218,7 @@ function renderHeatmap(
 
 
 // ============================================================
-// LOAD SELECTED YEAR HEATMAP
+// LOAD SELECTED YEAR HEATMAP (LeetCode)
 // ============================================================
 
 async function loadLeetCodeActivity(
@@ -1237,7 +1254,8 @@ async function loadLeetCodeActivity(
 
         renderHeatmap(
             year,
-            activityMap
+            activityMap,
+            heatmap
         );
 
     }
@@ -1256,7 +1274,7 @@ async function loadLeetCodeActivity(
 
 
 // ============================================================
-// FETCH ALL-TIME STATS
+// FETCH ALL-TIME STATS (LeetCode)
 // Total Solved -> submitStatsGlobal.acSubmissionNum via the
 // worker (lifetime, accepted-only, same value every year so
 // only needs to be read once).
@@ -1419,9 +1437,60 @@ async function fetchGfgTotalSolved() {
 
 
 // ============================================================
-// LOAD COMBINED STATS (LeetCode + GFG)
-// Combined total only — the heatmap itself stays LeetCode-only
-// since GFG has no per-day submission data.
+// FETCH CODESTUDIO STATS (Code360 by Coding Ninjas)
+// Proxied through our own worker's /codestudio route, which
+// walks Code360's public "contributions" endpoint across all
+// pages in the given date range and returns a totalSolved
+// count plus a submissionCalendar shaped like LeetCode's.
+// Optional and best-effort — a Code360 outage or API change
+// should never block LeetCode/GFG stats or the heatmap.
+// ============================================================
+
+async function fetchCodeStudioStats() {
+
+    try {
+
+        const endDate =
+            new Date().toISOString();
+
+        const response =
+            await fetch(
+                `${CODESTUDIO_API}?uuid=${CODESTUDIO_UUID}` +
+                `&start_date=${encodeURIComponent(CODESTUDIO_START_DATE)}` +
+                `&end_date=${encodeURIComponent(endDate)}`
+            );
+
+        if (!response.ok) {
+            throw new Error(
+                `HTTP ${response.status}`
+            );
+        }
+
+        const data =
+            await response.json();
+
+        return Number(data.totalSolved) || 0;
+
+    }
+
+    catch (error) {
+
+        console.warn(
+            "CodeStudio stats unavailable:",
+            error
+        );
+
+        return null; // null = couldn't fetch, not zero solved
+
+    }
+
+}
+
+
+// ============================================================
+// LOAD COMBINED STATS (LeetCode + GFG + CodeStudio)
+// The LeetCode heatmap stays as the only heatmap — GFG and
+// CodeStudio only contribute a total-solved count each.
 // ============================================================
 
 async function loadCombinedStats(leetcodeTotalSolved) {
@@ -1430,13 +1499,20 @@ async function loadCombinedStats(leetcodeTotalSolved) {
         gfgSolved.textContent = "...";
     }
 
+    if (codestudioSolved) {
+        codestudioSolved.textContent = "...";
+    }
+
     if (combinedTotalSolved) {
         combinedTotalSolved.textContent = "...";
     }
 
 
-    const gfgTotal =
-        await fetchGfgTotalSolved();
+    const [gfgTotal, codestudioTotal] =
+        await Promise.all([
+            fetchGfgTotalSolved(),
+            fetchCodeStudioStats()
+        ]);
 
 
     if (gfgSolved) {
@@ -1448,9 +1524,19 @@ async function loadCombinedStats(leetcodeTotalSolved) {
     }
 
 
+    if (codestudioSolved) {
+
+        codestudioSolved.textContent =
+            codestudioTotal === null
+                ? "--"
+                : codestudioTotal.toLocaleString();
+    }
+
+
     const combined =
         leetcodeTotalSolved +
-        (gfgTotal || 0);
+        (gfgTotal || 0) +
+        (codestudioTotal || 0);
 
 
     if (combinedTotalSolved) {
@@ -1517,9 +1603,9 @@ async function loadAllTimeStats() {
         );
 
 
-        // GFG is independent of LeetCode's health, so this
-        // runs even if LeetCode fails — it never throws back
-        // into this try block.
+        // GFG and CodeStudio are independent of LeetCode's
+        // health, so this runs even if LeetCode fails — it
+        // never throws back into this try block.
         loadCombinedStats(
             stats.totalSolved
         );
@@ -1547,8 +1633,8 @@ async function loadAllTimeStats() {
             maxStreak.textContent = "--";
         }
 
-        // LeetCode failed, but GFG's combined total can still
-        // show using 0 as the LeetCode contribution.
+        // LeetCode failed, but GFG/CodeStudio's combined total
+        // can still show using 0 as the LeetCode contribution.
         loadCombinedStats(0);
 
     }
