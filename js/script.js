@@ -630,6 +630,16 @@ const combinedTotalSolved =
 const currentYear =
     new Date().getFullYear();
 
+// Holds the currently-displayed year's LeetCode activity map,
+// and CodeStudio's/GFG's full-history activity maps (all
+// date -> count). Combined here rather than on the backend
+// since they load at different times and the LeetCode one
+// changes with the year dropdown.
+let leetcodeActivityMap = {};
+let leetcodeFullHistoryMap = {};
+let codestudioActivityMap = {};
+let gfgActivityMap = {};
+
 
 const LEETCODE_API =
     "https://falling-grass-92d4.swapnilbiradar12345.workers.dev/leetcode";
@@ -801,6 +811,60 @@ function createActivityMap(submissionCalendar) {
     );
 
     return map;
+
+}
+
+
+// ============================================================
+// MERGE ACTIVITY MAPS
+// Sums counts for any date present in more than one map. Used
+// to combine LeetCode's per-year map with CodeStudio's
+// full-history map into one heatmap.
+// ============================================================
+
+function mergeActivityMaps(...maps) {
+
+    const merged = {};
+
+    maps.forEach(map => {
+
+        Object.entries(map).forEach(
+            ([date, count]) => {
+
+                merged[date] =
+                    (merged[date] || 0) + count;
+
+            }
+        );
+
+    });
+
+    return merged;
+
+}
+
+
+// ============================================================
+// FILTER ACTIVITY MAP TO A SINGLE YEAR
+// ============================================================
+
+function filterActivityMapToYear(activityMap, year) {
+
+    const filtered = {};
+
+    const prefix = `${year}-`;
+
+    Object.entries(activityMap).forEach(
+        ([date, count]) => {
+
+            if (date.startsWith(prefix)) {
+                filtered[date] = count;
+            }
+
+        }
+    );
+
+    return filtered;
 
 }
 
@@ -1218,6 +1282,49 @@ function renderHeatmap(
 
 
 // ============================================================
+// RENDER COMBINED HEATMAP FOR A YEAR
+// Merges the stored LeetCode map (for the given year) with
+// CodeStudio's and GFG's maps, both filtered down to that year,
+// then renders into the LeetCode heatmap container. Safe to
+// call before any source has loaded — a missing one just
+// contributes nothing yet, no error.
+// ============================================================
+
+function renderCombinedHeatmapForYear(year) {
+
+    if (!heatmap) {
+        return;
+    }
+
+    const codestudioForYear =
+        filterActivityMapToYear(
+            codestudioActivityMap,
+            year
+        );
+
+    const gfgForYear =
+        filterActivityMapToYear(
+            gfgActivityMap,
+            year
+        );
+
+    const combinedMap =
+        mergeActivityMaps(
+            leetcodeActivityMap,
+            codestudioForYear,
+            gfgForYear
+        );
+
+    renderHeatmap(
+        year,
+        combinedMap,
+        heatmap
+    );
+
+}
+
+
+// ============================================================
 // LOAD SELECTED YEAR HEATMAP (LeetCode)
 // ============================================================
 
@@ -1246,16 +1353,14 @@ async function loadLeetCodeActivity(
             );
 
 
-        const activityMap =
+        leetcodeActivityMap =
             createActivityMap(
                 data.submissionCalendar
             );
 
 
-        renderHeatmap(
-            year,
-            activityMap,
-            heatmap
+        renderCombinedHeatmapForYear(
+            year
         );
 
     }
@@ -1266,6 +1371,12 @@ async function loadLeetCodeActivity(
         console.error(
             "LeetCode heatmap error:",
             error
+        );
+
+        leetcodeActivityMap = {};
+
+        renderCombinedHeatmapForYear(
+            year
         );
 
     }
@@ -1386,21 +1497,23 @@ async function fetchAllTimeStats() {
     return {
         totalSolved,
         days: activityStats.days,
-        streak: activityStats.streak
+        streak: activityStats.streak,
+        activityMap: combinedMap
     };
 
 }
 
 
 // ============================================================
-// FETCH GFG TOTAL SOLVED
-// (proxied through our own worker's /gfg route, which itself
-// calls a third-party unofficial GFG stats API. This can fail
-// or be unavailable — always treat it as optional and never
-// let it block LeetCode stats or the heatmap.)
+// FETCH GFG STATS
+// (proxied through our own worker's /gfg route, which now calls
+// GeeksforGeeks' own practiceapi directly — returns an exact
+// lifetime total plus a submissionCalendar built from real
+// per-problem timestamps. Still treated as optional/best-effort
+// so a GFG outage never blocks LeetCode stats or the heatmap.)
 // ============================================================
 
-async function fetchGfgTotalSolved() {
+async function fetchGfgStats() {
 
     try {
 
@@ -1418,7 +1531,10 @@ async function fetchGfgTotalSolved() {
         const data =
             await response.json();
 
-        return Number(data.totalSolved) || 0;
+        return {
+            totalSolved: Number(data.totalSolved) || 0,
+            submissionCalendar: data.submissionCalendar || {}
+        };
 
     }
 
@@ -1469,7 +1585,10 @@ async function fetchCodeStudioStats() {
         const data =
             await response.json();
 
-        return Number(data.totalSolved) || 0;
+        return {
+            totalSolved: Number(data.totalSolved) || 0,
+            submissionCalendar: data.submissionCalendar || {}
+        };
 
     }
 
@@ -1489,8 +1608,11 @@ async function fetchCodeStudioStats() {
 
 // ============================================================
 // LOAD COMBINED STATS (LeetCode + GFG + CodeStudio)
-// The LeetCode heatmap stays as the only heatmap — GFG and
-// CodeStudio only contribute a total-solved count each.
+// GFG and CodeStudio each contribute a total and a per-day map,
+// both merged into the LeetCode heatmap via
+// renderCombinedHeatmapForYear, and also folded into Active
+// Days / Max Streak so those match the combined heatmap
+// instead of staying LeetCode-only.
 // ============================================================
 
 async function loadCombinedStats(leetcodeTotalSolved) {
@@ -1508,9 +1630,9 @@ async function loadCombinedStats(leetcodeTotalSolved) {
     }
 
 
-    const [gfgTotal, codestudioTotal] =
+    const [gfgStats, codestudioStats] =
         await Promise.all([
-            fetchGfgTotalSolved(),
+            fetchGfgStats(),
             fetchCodeStudioStats()
         ]);
 
@@ -1518,25 +1640,84 @@ async function loadCombinedStats(leetcodeTotalSolved) {
     if (gfgSolved) {
 
         gfgSolved.textContent =
-            gfgTotal === null
+            gfgStats === null
                 ? "--"
-                : gfgTotal.toLocaleString();
+                : gfgStats.totalSolved.toLocaleString();
     }
 
 
     if (codestudioSolved) {
 
         codestudioSolved.textContent =
-            codestudioTotal === null
+            codestudioStats === null
                 ? "--"
-                : codestudioTotal.toLocaleString();
+                : codestudioStats.totalSolved.toLocaleString();
+    }
+
+
+    if (gfgStats) {
+
+        gfgActivityMap =
+            gfgStats.submissionCalendar;
+
+    }
+
+    if (codestudioStats) {
+
+        codestudioActivityMap =
+            codestudioStats.submissionCalendar;
+
+    }
+
+    if (gfgStats || codestudioStats) {
+
+        const selectedYear =
+            activityYear
+                ? Number(activityYear.value)
+                : currentYear;
+
+        renderCombinedHeatmapForYear(
+            selectedYear
+        );
+
+
+        // Recompute Active Days / Max Streak across the full
+        // combined history (LeetCode + CodeStudio + GFG) so
+        // these stats match what the heatmap now shows, rather
+        // than staying LeetCode-only.
+        const combinedFullHistory =
+            mergeActivityMaps(
+                leetcodeFullHistoryMap,
+                codestudioActivityMap,
+                gfgActivityMap
+            );
+
+        const combinedActivityStats =
+            calculateActivityStats(
+                combinedFullHistory
+            );
+
+        if (activeDays) {
+
+            activeDays.textContent =
+                combinedActivityStats.days.toLocaleString();
+
+        }
+
+        if (maxStreak) {
+
+            maxStreak.textContent =
+                combinedActivityStats.streak;
+
+        }
+
     }
 
 
     const combined =
         leetcodeTotalSolved +
-        (gfgTotal || 0) +
-        (codestudioTotal || 0);
+        (gfgStats?.totalSolved || 0) +
+        (codestudioStats?.totalSolved || 0);
 
 
     if (combinedTotalSolved) {
@@ -1571,6 +1752,10 @@ async function loadAllTimeStats() {
 
         const stats =
             await fetchAllTimeStats();
+
+
+        leetcodeFullHistoryMap =
+            stats.activityMap;
 
 
         if (totalSolved) {
